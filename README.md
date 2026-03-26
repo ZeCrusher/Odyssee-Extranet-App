@@ -5,8 +5,7 @@
        AMV      MMmmMM    MM            MMmmdM9   MM       M   `YMMNq.   MMmmmmmmMM    MMmmMM      MMmmdM9   
       AMV   ,   MM   Y  , MM.           MM  YM.   MM       M .     `MM   MM      MM    MM   Y  ,   MM  YM.   
      AMV   ,M   MM     ,M `Mb.     ,'   MM   `Mb. YM.     ,M Mb     dM   MM      MM    MM     ,M   MM   `Mb. 
-    AMVmmmmMM .JMMmmmmMMM   `"bmmmd'  .JMML. .JMM. `bmmmmd"' P"Ybmmd"  .JMML.  .JMML..JMMmmmmMMM .JMML. .JMM.																									  _                        
-
+    AMVmmmmMM .JMMmmmmMMM   `"bmmmd'  .JMML. .JMM. `bmmmmd"' P"Ybmmd"  .JMML.  .JMML..JMMmmmmMMM .JMML. .JMM.
 
 # 🚀 Odyssee Extranet
 
@@ -39,9 +38,7 @@ Le projet est construit avec :
 	├── pages/           	# Fichiers 
 	├── ajax/             	# Code source principal
 	├── includes/         	# Configuration
-
 	└── README.md
-
 
 
 ###  MAJ du 2026/03/23 - ZeCrusher
@@ -71,6 +68,7 @@ Le projet est construit avec :
 	-> git add README.md <-pour faire une sauvegarde des modifications
 	-> git commit -m "Descriptif de la modification"
 	-> git config --global user.name "ZeCrusher"
+	-> git config --global user.email zecrusher@
 
 
 - Il faut relier après le projet local au projet github : 

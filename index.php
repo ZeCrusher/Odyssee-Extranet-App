@@ -1,4 +1,6 @@
 <?php
+/* Connexion à L'Extranet */
+
 	tracage($_SERVER['PHP_SELF']);
 	header('Location: odyssee/authentication/sign-up/index.php');
 	exit();
