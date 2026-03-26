@@ -36,13 +36,10 @@ Le projet est construit avec :
 
 
 	odyssee/
-	├── pages/           	# Fichiers 
+	├── pages/           	# Fichiers
 	├── ajax/             	# Code source principal
 	├── includes/         	# Configuration
-
 	└── README.md
-
-
 
 ###  MAJ du 2026/03/23 - ZeCrusher
 
