@@ -5,14 +5,43 @@
        AMV      MMmmMM    MM            MMmmdM9   MM       M   `YMMNq.   MMmmmmmmMM    MMmmMM      MMmmdM9   
       AMV   ,   MM   Y  , MM.           MM  YM.   MM       M .     `MM   MM      MM    MM   Y  ,   MM  YM.   
      AMV   ,M   MM     ,M `Mb.     ,'   MM   `Mb. YM.     ,M Mb     dM   MM      MM    MM     ,M   MM   `Mb. 
-    AMVmmmmMM .JMMmmmmMMM   `"bmmmd'  .JMML. .JMM. `bmmmmd"' P"Ybmmd"  .JMML.  .JMML..JMMmmmmMMM .JMML. .JMM.
-																									  _                        
+    AMVmmmmMM .JMMmmmmMMM   `"bmmmd'  .JMML. .JMM. `bmmmmd"' P"Ybmmd"  .JMML.  .JMML..JMMmmmmMMM .JMML. .JMM.																									  _                        
 
+
+# 🚀 Odyssee Extranet
+
+- Plateforme extranet développée en PHP & JavaScript  
+
+# Description
+
+ - Odyssee Extranet est une application web permettant aux utilisateurs autorisés d'accéder à des services, données et outils internes via une interface centralisée.
+
+Le projet est construit avec :
+
+	- PHP (backend)
+	- JavaScript (frontend)
+	-️ Base de données MySQL
+	- Fonctionnalités
+	- Authentification sécurisée
+	- Gestion des utilisateurs
+	- Accès aux ressources internes
+	- Interface dynamique
+	- Architecture modulaire
 
 # Odyssee-Extranet-Office-de-Tourisme
 
 - Mise à jour 2026 et création de la passerelle GITHUB / VSCODE
 - Création de l'arbo Odyssée de base.
+
+
+
+	odyssee/
+	├── pages/           	# Fichiers 
+	├── ajax/             	# Code source principal
+	├── includes/         	# Configuration
+
+	└── README.md
+
 
 
 ###  MAJ du 2026/03/23 - ZeCrusher
