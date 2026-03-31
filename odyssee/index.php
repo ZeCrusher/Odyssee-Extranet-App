@@ -3265,9 +3265,7 @@ function deleteAstuce(id) {
 			<div id="tour-tooltip">
 				<p id="tour-text" style="color: #333; font-weight: 500;">Chargement de l'aide...</p>
 				<div id="tour-footer">
-					<span id="tour-step-counter" style="color: #777; font-size: 0.9rem;">
-						<i class="ki-duotone ki-watch"><span class="path1"></span><span class="path2"></span></i>
-					</span>
+					<span id="tour-step-counter" style="color: #777; font-size: 0.9rem;"><i class="ki-duotone ki-watch"><span class="path1"></span><span class="path2"></span></i></span>
 					<button onclick="nextStep()" id="tour-next-btn">Suivant</button>
 				</div>
 			</div>
