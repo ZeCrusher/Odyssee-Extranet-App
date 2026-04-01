@@ -100,7 +100,7 @@ session_start();
 // ************************************************************************************************ 2024 Extranet 			 *****
 // *****                   EXTRANET 2024 - Php & Co                                                                          *****
 // *******************************************************************************************************************************
-// *****              (c) 2016/26 - extranet - zecrusher@gmail.com                                                           *****
+// *****              (c) 2016/24 - extranet - zecrusher@gmail.com                                                           *****
 
 License:      free !!!! GNU 
 -- jQuery (JavaScript Library)                           http://jquery.com 
@@ -185,6 +185,55 @@ License:      free !!!! GNU
 }
 .card-body::-webkit-scrollbar-track {
     background: transparent;
+}
+
+/* Si vos logos sont blancs, on ajoute un fond gris clair sous l'image dans l'admin */
+/* 
+.btn-check + img {
+    filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1));
+    background-color: #f9f9f9;
+    padding: 5px;
+    border-radius: 4px;
+} 
+*/
+
+.btn-preview {
+    background: #EE7F00;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.modal-overlay {
+    display: none; 
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.modal-content {
+    position: relative;
+    margin: 2vh auto;
+    width: 95%;
+    max-width: 1200px;
+}
+
+.close-modal {
+    position: absolute;
+    right: -10px;
+    top: -40px;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
 }
 </style>
 
@@ -292,121 +341,265 @@ License:      free !!!! GNU
 						
 								<div id="kt_app_content_container" class="app-container  container-fluid ">
 										<!--begin::Inbox App - Messages -->
+ 									
+							<?php
+								$pdo = ConnexionPDO();
+								
+								if ($_GET['status']=="success") {
+									echo '<div class="alert alert-success d-flex align-items-center p-5 mb-10">
+										<i class="ki-duotone ki-shield-tick fs-2hx text-success me-4"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+										<div class="d-flex flex-column pe-0 pe-sm-10"><h4 class="mb-1 text-success">Enregristrer ! </span></div><button type="button" 
+										class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert"><i class="ki-duotone ki-cross fs-1 text-success"><span class="path1"></span><span class="path2"></span></i></button>
+									</div>';
+								}
 
-									
-								<?php
-									try {
-								 
-										$pdo = ConnexionPDO();
-										
-										// On récupère les champs spécifiques à odyslider
-										$query = $pdo->query("SELECT id, slider_title, photo, slider_actif, service, periode FROM odyslider ORDER BY id DESC");
-											$sliders = $query->fetchAll(PDO::FETCH_ASSOC);
-									} catch (Exception $e) {
-											die("Erreur : " . $e->getMessage());
+									$id = intval($_GET['id'] ?? 0);
+
+									// Récupération des données actuelles
+									$stmt = $pdo->prepare("SELECT * FROM odyslider WHERE id = ?");
+									$stmt->execute([$id]);
+									$s = $stmt->fetch(PDO::FETCH_ASSOC);
+
+									if (!$s) {
+										die("Slider introuvable.");
 									}
+
+									// Liste des services (écrans) pour le menu déroulant
+									$services = ['Ecran 1', 'Ecran 2', 'Accueil', 'Office de Tourisme'];
 								?>
 
-									<div class="d-flex flex-stack mb-5">
-										<h1 class="fw-bold text-dark">Mes Sliders (Écrans)</h1>
-										<a href="add_slider.php" class="btn btn-primary">
-											<i class="ki-duotone ki-plus fs-2"></i> Nouveau Slider
-										</a>
-										 
-									</div>
-									<div class="card-toolbar d-flex gap-2 mb-5">
-										<a href="display_type/e1.php" class="btn btn-sm btn-light-primary" target="blanck_"><img style="height: 30px;width:30px" src="img/shortcuts/slider-01.png" alt=""></a>
-										<a href="display_type/e2.php" class="btn btn-sm btn-light-primary" target="blanck_"><img style="height: 30px;width:30px;" src="img/shortcuts/slider-02.png" alt=""></a>
-										<a href="display_type/e3.php" class="btn btn-sm btn-light-primary" target="blanck_"><img style="height: 30px;width:30px;" src="img/shortcuts/slider-03.png" alt=""></a>
-										<a href="display_type/e4.php" class="btn btn-light-success" target="blanck_"><img style="height: 30px;width:30px;" src="img/shortcuts/slider-04.png" alt=""></a>
-										<!-- <a id="previewSite" class="btn btn-sm btn-primary">Aperçu</a> -->
-									</div>				
 
-									<div class="row g-6 g-xl-9">
-										<?php if (empty($sliders)): ?>
-											<div class="col-12">
-												<div class="alert alert-info">Aucun slider trouvé !?</div>
-											</div>
-										<?php else: ?>
-											<?php foreach($sliders as $s): ?>
-												<div class="col-md-6 col-xl-4">
-													<div class="card h-100 shadow-sm">
+									<div class="card shadow-sm">
+										<div class="card-header">
+											<h3 class="card-title">Modifier le Slider : <span class="text-primary ms-2"><?php echo htmlspecialchars($s['slider_title']); ?></span></h3>
+										
+												<div class="card-toolbar">
+												
+													<button onclick="openPreview()"  class="btn btn-sm btn-light-info me-3">
+														<i class="ki-duotone ki-exit-left"><span class="path1"></span><span class="path2"></span></i> Aperçu du Slide
+													</button>
+													<a href="vignettes.php"  class="btn btn-sm btn-light-warning me-3">
+														<i class="ki-duotone ki-exit-left"><span class="path1"></span><span class="path2"></span></i> Retour à l'accueil
+													</a>
+												</div>
+												<div id="previewModal" class="modal-overlay">
+													<div class="modal-content">
+														<span class="close-modal" onclick="closePreview()">&times;</span>
+														<iframe id="previewFrame" src="" frameborder="0" style="width:100%; height:90vh;"></iframe>
+													</div>
+												</div>
+										
+										</div>
+										
+										
+										<form action="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/save_slider.php" method="POST" enctype="multipart/form-data">
+											<input type="hidden" name="id" value="<?php echo $s['id']; ?>">
+											
+											<div class="card-body">
+												<div class="row g-9 mb-8">
+													<div class="col-md-6 fv-row">
+														<label class="required fs-6 fw-semibold mb-2">Titre de la manifestation</label>
+														<input type="text" class="form-control form-control-solid" name="slider_title" value="<?php echo htmlspecialchars($s['slider_title']); ?>" required />
+													</div>
+
+													<div class="col-md-6 fv-row">
+														<label class="required fs-6 fw-semibold mb-2">Assigner à l'écran (Service)</label>
+														<div class="col-md-6 fv-row">
+															<label class="fs-6 fw-semibold mb-2">Icône de l'affichage</label>
+															<label class="fs-6 fw-semibold mb-3">Choisissez l'icône à afficher sur l'écran</label>
+															
+															<div class="row g-4">
+																<?php 
+																// Liste des options pour éviter la répétition manuelle
+																$screens = [
+																	'Ecran 1' => 'ki-screen',
+																	'Ecran 2' => 'ki-screen',
+																	'Ecran 3' => 'ki-screen',
+																	'none'     => 'ki-cross-square'
+																];
+
+																foreach ($screens as $value => $icon): 
+																	$isActive = ($s['service'] == $value);
+																	$label = ($value == 'none') ? 'NON' : $value;
+																?>
+																<div class="col-3">
+																	<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex flex-column text-center p-5 <?php echo $isActive ? 'active' : ''; ?>">
+																		<input class="btn-check" type="radio" name="service" value="<?php echo $value; ?>" <?php echo $isActive ? 'checked="checked"' : ''; ?> />
+																		
+																		<div class="h-50px mb-3 d-flex align-items-center justify-content-center">
+																			<i class="ki-duotone <?php echo $icon; ?> fs-2x">
+																				<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>
+																			</i>
+																		</div>
+																		
+																		<span class="fs-7 fw-bold"><?php echo $label; ?></span>
+																	</label>
+																</div>
+																<?php endforeach; ?>
+															</div>
+															
+															<div class="text-muted fs-7 mt-2">L'icône décorative du slider</div>
+														</div>
+													</div>
+												</div>
+
+												<div class="row g-9 mb-8">
+													<div class="col-md-6 fv-row">
+														<label class="fs-6 fw-semibold mb-2">Date en clair (Ex: Le 1er septembre à 12h42)</label>
+														<input type="text" class="form-control form-control-solid" name="periode" value="<?php echo htmlspecialchars($s['periode']); ?>" />
+													</div>
+													
+													<div class="col-md-3 fv-row">
+														<label class="fs-6 fw-semibold mb-2">Date de début de l'affichage</label>
+														<input type="date" class="form-control form-control-solid" name="slider_date" value="<?php echo date('Y-m-d', strtotime($s['slider_date'])); ?>" />
+													</div>
+
+													<div class="col-md-3 fv-row">
+														<label class="fs-6 fw-semibold mb-2">Date de fin de l'affichage</label>
+														<input type="date" class="form-control form-control-solid" name="slider_date_fin" value="<?php echo !empty($s['slider_date_fin']) ? date('Y-m-d', strtotime($s['slider_date_fin'])) : ''; ?>" />
+													</div>
+
+													<div class="col-md-6 fv-row">
+														<label class="fs-6 fw-semibold mb-2">Style du Logo</label>
+														<label class="fs-6 fw-semibold mb-3">Choix du Logo sur l'écran</label>
+															<div class="row g-6">
+																<div class="col-4">
+																	<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex flex-column text-center p-5 <?php echo ($s['logo'] == 'logo-couleur.png') ? 'active' : ''; ?>">
+																		<input class="btn-check" type="radio" name="logo" value="logo-couleur.png" <?php echo ($s['logo'] == 'logo-couleur.png') ? 'checked' : ''; ?> />
+																		<img src="https://extranet.martigues-tourisme.com/desire/fichiers/communs/slider/logo/logo-couleur.png" class="h-150px mb-3 mx-auto" alt="Logo Couleur" />
+																		<span class="fs-7 fw-bold">Couleur</span>
+																	</label>
+																</div>
+																	<div class="col-4">
+																	<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex flex-column text-center p-5 <?php echo ($s['logo'] == 'logo-nb.png') ? 'active' : ''; ?>">
+																		<input class="btn-check" type="radio" name="logo" value="logo-nb.png" <?php echo ($s['logo'] == 'logo-nb.png') ? 'checked' : ''; ?> />
+																		<img src="https://extranet.martigues-tourisme.com/desire/fichiers/communs/slider/logo/OTImartigues_Logo-Blanc.png" class="h-150px mb-3 mx-auto" alt="Logo N&B" />
+																		<span class="fs-7 fw-bold">Noir & Blanc</span>
+																	</label>
+																</div>
+																	<div class="col-4">
+																<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex flex-column text-center p-5 <?php echo ($s['logo'] == 'NON') ? 'active' : ''; ?>">
+																		<input class="btn-check" type="radio" name="logo" value="NON" <?php echo ($s['logo'] == 'NON') ? 'checked' : ''; ?> />
+																		<div class="h-140px mb-3 d-flex align-items-center justify-content-center"  style="margin-block-start: 85px !important;">
+																			<i class="fa-solid fa-ban fs-5x text-gray-400"></i>
+																		</div>
+																		<span class="fs-7 fw-bold">Aucun</span>
+																	</label>
+																</div>
+															</div>
+														<div class="text-muted fs-7 mt-2">Le logo</div>
 														
-														<div class="card-header border-0 pt-5">
-															<h3 class="card-title align-items-start flex-column">
-																<span class="card-label fw-bold text-dark"><?php echo htmlspecialchars($s['slider_title']); ?></span>
-																<span class="text-muted mt-1 fw-semibold fs-7">Afficher sur : <?php echo htmlspecialchars($s['service']); ?></span>
-															</h3>
-															
-															<div class="card-toolbar">
-																<button class="btn btn-icon btn-color-gray-500 btn-active-color-primary justify-content-end show menu-dropdown  w-100px" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-overflow="true">   
-																	<i class="ki-duotone ki-dots-square fs-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>                             
-																</button>
-																
-																<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary w-150px py-3" data-kt-menu="true">
-																	
-																	<div class="menu-item px-3">
-																		<a href="javascript:void(0)" class="menu-link px-3 btn-rename" data-id="<?php echo $s['id']; ?>" data-name="<?php echo htmlspecialchars($s['slider_title']); ?>">
-																			Renommer
-																		</a>
-																	</div>
-																	<div class="menu-item px-3">
-																		<a href="javascript:void(0)" class="menu-link px-3 btn-duplicate" data-id="<?php echo $s['id']; ?>">
-																			<!--  <i class="ki-duotone ki-copy fs-6"></i> --> Dupliquer
-																		</a>
-																	</div>
-																	<div class="menu-item px-3">
-																		<a href="javascript:void(0)" class="menu-link px-3 text-danger btn-delete" data-id="<?php echo $s['id']; ?>">
-																			Supprimer
-																		</a>
+															<label class="fs-6 fw-semibold mb-3">Afficher l'heure sur l'écran</label>
+															<div class="row g-6 mb-8">
+																<div class="col-6">
+																	<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex align-items-center p-5 <?php echo ($s['heure'] == 'OUI') ? 'active' : ''; ?>">
+																		<input class="btn-check" type="radio" name="heure" value="OUI" <?php echo ($s['heure'] == 'OUI') ? 'checked' : ''; ?> />
+																		<div class="symbol symbol-40px me-4">
+																			<div class="symbol-label bg-light-primary">
+																				<i class="fa-solid fa-clock text-primary fs-2x"></i>
+																			</div>
+																		</div>
+																		<div class="text-start">
+																			<span class="fs-7 fw-bold d-block">Afficher l'heure</span>
+																			<span class="text-muted fs-8">Horloge numérique active</span>
+																		</div>
+																	</label>
+																</div>
+
+																<div class="col-6">
+																	<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex align-items-center p-5 <?php echo ($s['heure'] == 'NON' || empty($s['heure'])) ? 'active' : ''; ?>">
+																		<input class="btn-check" type="radio" name="heure" value="NON" <?php echo ($s['heure'] == 'NON' || empty($s['heure'])) ? 'checked' : ''; ?> />
+																		<div class="symbol symbol-40px me-4">
+																			<div class="symbol-label bg-light-secondary">
+																				<i class="fa-solid fa-clock-rotate-left text-gray-400 fs-2x"></i>
+																			</div>
+																		</div>
+																		<div class="text-start">
+																			<span class="fs-7 fw-bold d-block">Masquer</span>
+																			<span class="text-muted fs-8">Pas d'horloge</span>
+																		</div>
+																	</label>
+																</div>
+															</div>														
+														
+													</div>
+																										
+													<div class="col-md-6 fv-row">
+														<label class="fs-6 fw-semibold mb-2">Statut</label>
+														<div class="form-check form-switch form-check-custom form-check-solid mt-2">
+															<input class="form-check-input h-30px w-50px" type="checkbox" name="slider_actif" value="OUI" <?php echo ($s['slider_actif'] == 'OUI') ? 'checked' : ''; ?> />
+															<span class="form-check-label fw-semibold">Activer</span>
+														</div>
+														<br>
+														<div class="row g-9 mb-8">
+															<div class="col-md-6 fv-row">
+																<label class="fs-6 fw-semibold mb-2">Options d'affichage</label>
+																<div class="d-flex align-items-center mt-3">
+																	<div class="form-check form-switch form-check-custom form-check-solid me-10">
+																		<input class="form-check-input h-30px w-50px" type="checkbox" name="qrcode_actif" value="OUI" <?php echo ($s['qrcode'] != 'NON' && !empty($s['qrcode'])) ? 'checked' : ''; ?> />
+																		<span class="form-check-label fw-bold">Afficher le QR Code</span>
 																	</div>
 																</div>
+																<div class="text-muted fs-7 mt-2">Le QR Code sera généré automatiquement vers la page de l'événement.</div>
 															</div>
-																													
+
+
+															
+															<label class="fs-6 fw-semibold mb-3">Style de la Météo</label>
+															<div class="text-muted fs-7 mt-2">Affiche les prévisions locales en temps réel sur l'écran sur 4 jours via l'API OpenWeatherMap.</div>
+																<div class="row g-6">
+																	<div class="col-4">
+																		<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex flex-column text-center p-5 <?php echo ($s['meteo'] == 'NON' || empty($s['meteo'])) ? 'active' : ''; ?>">
+																			<input class="btn-check" type="radio" name="meteo" value="NON" <?php echo ($s['meteo'] == 'NON' || empty($s['meteo'])) ? 'checked' : ''; ?> />
+																			<div class="h-40px mb-3 d-flex align-items-center justify-content-center">
+																				<i class="fa-solid fa-cloud-slash fs-2x text-gray-400"></i>
+																			</div>
+																			<span class="fs-7 fw-bold">Aucune</span>
+																		</label>
+																	</div>
+																		<div class="col-4">
+																		<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex flex-column text-center p-5 <?php echo ($s['meteo'] == 'iconpack1') ? 'active' : ''; ?>">
+																			<input class="btn-check" type="radio" name="meteo" value="iconpack1" <?php echo ($s['meteo'] == 'iconpack1') ? 'checked' : ''; ?> />
+																			<img src="https://extranet.martigues-tourisme.com/desire/pages/slider/img/iconpack2/01d.png" class="h-40px mb-3 mx-auto" alt="Météo Pack 1" />
+																			<span class="fs-7 fw-bold">Pack 1 (Flat)</span>
+																		</label>
+																	</div>
+																		<div class="col-4">
+																			<label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex flex-column text-center p-5 <?php echo ($s['meteo'] == 'iconpack2') ? 'active' : ''; ?>">
+																				<input class="btn-check" type="radio" name="meteo" value="iconpack2" <?php echo ($s['meteo'] == 'iconpack2') ? 'checked' : ''; ?> />
+																				<img src="https://extranet.martigues-tourisme.com/desire/pages/slider/img/iconpack1/01d.png" class="h-40px mb-3 mx-auto" alt="Météo Pack 2" />
+																				<span class="fs-7 fw-bold">Pack 2 (Réaliste)</span>
+																			</label>
+																		</div>
+																</div>
+															
+															
+															
 															
 														</div>
+													</div>									
+													
+												</div>
 
-														<div class="card-body p-0 position-relative" style="height: 200px; background-color: #f5f8fa; overflow: hidden;">
-															 
-															<?php 
-																$fileName = trim($s['photo']);
-																$encodedFile = rawurlencode($fileName);
-																$path = "https://extranet.martigues-tourisme.com/desire/fichiers/communs/slider/img/"  . $encodedFile;
+												<div class="fv-row mb-8">
+													<label class="fs-6 fw-semibold mb-2">Description / Note (HTML)</label>
+													<textarea name="note" id="kt_docs_quill_basic" class="form-control form-control-solid" rows="6"><?php echo $s['note']; ?></textarea>
+												</div>
 
-																// Équivalent de str_ends_with en PHP 7.x
-																$extension = '.mp4';
-																$is_video = !empty($fileName) && (substr(strtolower($fileName), -strlen($extension)) === $extension);
-															?>
+												<div class="fv-row mb-8">
+													<label class="fs-6 fw-semibold mb-2">Changer la Photo ou Vidéo (.jpg, .png, .mp4)</label>
+													<input type="file" name="photo_file" class="form-control form-control-solid" />
+													<div class="text-muted fs-7 mt-2">Fichier actuel : <?php echo htmlspecialchars($s['photo']); ?></div>
+												</div>
+											</div>
 
-															<?php if ($is_video): ?>
-																
-																<div class="d-flex flex-center h-100" style="background: linear-gradient(45deg, #121212, #2c2c2c);">
-																	<div class="text-center">
-																		<i class="fa-solid fa-circle-play text-white opacity-50 fs-4x"></i>
-																		<div class="text-white opacity-50 mt-2 fw-bold small">FORMAT VIDÉO</div>
-																		<div class="text-muted fs-9"><?php echo htmlspecialchars($fileName); ?></div>
-																	</div>
-																</div>
-																
-															<?php else: ?>
-																<div style="width: 100%; height: 100%; background-image: url('<?php echo $path; ?>'); background-size: cover; background-position: center;"></div>
-															<?php endif; ?>
-
-															<div class="position-absolute top-0 end-0 m-3">
-																<span class="badge badge-<?php echo ($s['slider_actif'] == 'OUI') ? 'success' : 'danger'; ?>">
-																	<?php echo $s['slider_actif']; ?>
-																</span>
-															</div>
-														</div>
-														<div class="card-footer py-5 text-center">
-															<a href="edit_slider.php?id=<?php echo $s['id']; ?>" class="btn btn-sm btn-light-primary w-100">
-																Editer
-															</a>
-														</div> 
-													</div> 
-												</div> <?php endforeach; ?>
-										<?php endif; ?>
+											<div class="card-footer d-flex justify-content-end py-6 px-9">
+												<a href="vignettes.php" class="btn btn-light btn-active-light-primary me-2">Annuler</a>
+												<button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+											</div>
+										</form>
 									</div>
+
 
 								</div>
 							</div>
@@ -485,91 +678,117 @@ License:      free !!!! GNU
 			<!--begin::Vendors Javascript(used for this page only)-->
 			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
 			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/index.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/xy.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/percent.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/radar.js"></script>
 
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/map.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/';?>assets/js/geodata/worldLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/continentsLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/usaLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/worldTimeZonesLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/worldTimeZoneAreasLow.js"></script>
 			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/custom/datatables/datatables.bundle.js"></script> 
 			<!--end::Vendors Javascript-->
 				
 			<!--begin::Custom Javascript(used for this page only)-->
 			 <script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/widgets.bundle.js"></script>
 			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/widgets.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/apps/chat/chat.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/upgrade-plan.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/create-account.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/create-app.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/users-search.js"></script>  
 			<!--end::Custom Javascript-->
 
 
-
-
-		<!--end::Javascript-->			
 			<script>
 
-				$(document).ready(function() {
-					// --- RENOMMER ---
-					$('.btn-rename').on('click', function() {
-						const id = $(this).data('id');
-						const oldName = $(this).data('name');
 
-						Swal.fire({
-							title: 'Renommer le slider',
-							input: 'text',
-							inputValue: oldName,
-							showCancelButton: true,
-							confirmButtonText: 'Mettre à jour',
-							cancelButtonText: 'Annuler',
-							confirmButtonColor: '#009ef7'
-						}).then((result) => {
-							if (result.isConfirmed && result.value) {
-								window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=rename&id=${id}&name=${encodeURIComponent(result.value)}`;
-							}
-						});
-					});
+				document.addEventListener('DOMContentLoaded', function() {
+					// 1. On sélectionne tous les inputs radio du groupe "logo"
+					const logoRadios = document.querySelectorAll('input[name="logo"]');
 
-					// --- DUPLIQUER ---
-					$('.btn-duplicate').on('click', function() {
-						const id = $(this).data('id');
-						Swal.fire({
-							title: 'Dupliquer ce slider ?',
-							text: "Une copie identique sera créée.",
-							icon: 'question',
-							showCancelButton: true,
-							confirmButtonText: 'Oui, dupliquer',
-							confirmButtonColor: '#50cd89'
-						}).then((result) => {
-							if (result.isConfirmed) {
-								window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=duplicate&id=${id}`;
-							}
-						});
-					});
+					logoRadios.forEach(radio => {
+						radio.addEventListener('change', function() {
+							// 2. On cherche tous les parents "label" pour retirer la classe active
+							logoRadios.forEach(r => {
+								r.closest('label').classList.remove('active');
+							});
 
-					// --- SUPPRIMER ---
-					$('.btn-delete').on('click', function() {
-						const id = $(this).data('id');
-						Swal.fire({
-							title: 'Supprimer ce slider ?',
-							text: "Cette action est irréversible !",
-							icon: 'warning',
-							showCancelButton: true,
-							confirmButtonText: 'Supprimer',
-							confirmButtonColor: '#f1416c'
-						}).then((result) => {
-							if (result.isConfirmed) {
-								window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=delete&id=${id}`;
+							// 3. On ajoute la classe active au label parent du bouton coché
+							if (this.checked) {
+								this.closest('label').classList.add('active');
 							}
+							
+							// Optionnel : Afficher la valeur sélectionnée dans la console
+							console.log("Logo sélectionné :", this.value);
 						});
 					});
 				});
+
+				function getSelectedLogo() {
+					const selected = document.querySelector('input[name="logo"]:checked');
+					return selected ? selected.value : null;
+				}
+				
+				
+				
+				
+				$(document).ready(function() {
+					// Quand on clique sur un label de météo ou de logo
+					$('input[name="meteo"], input[name="logo"]').on('change', function() {
+						// On trouve le groupe de boutons (le parent container)
+						const name = $(this).attr('name');
+						// On retire la classe 'active' de tous les labels du même groupe
+						$(`input[name="${name}"]`).closest('label').removeClass('active');
+						// On ajoute la classe 'active' au label sélectionné
+						$(this).closest('label').addClass('active');
+					});
+					
+					$('.btn-check').on('change', function() {
+							const inputName = $(this).attr('name');
+							
+							// 1. On cherche tous les inputs qui ont le même nom
+							// 2. On remonte au parent <label>
+							// 3. On enlève la classe 'active' à tout le monde
+							$(`input[name="${inputName}"]`).closest('label').removeClass('active');
+							
+							// 4. On ajoute la classe 'active' uniquement à celui qu'on vient de cocher
+							if ($(this).is(':checked')) {
+								$(this).closest('label').addClass('active');
+							}
+						});					
+					
+				});				
+				
+				// On écoute le changement sur tous les boutons radio nommés "service"
+				document.querySelectorAll('input[name="service"]').forEach((input) => {
+					input.addEventListener('change', function() {
+						// 1. On retire la classe 'active' de tous les labels du groupe
+						document.querySelectorAll('input[name="service"]').forEach((i) => {
+							i.closest('label').classList.remove('active');
+						});
+
+						// 2. On ajoute la classe 'active' au label parent du bouton cliqué
+						if (this.checked) {
+							this.closest('label').classList.add('active');
+						}
+					});
+				});
+
+
+				function openPreview() {
+					// On récupère l'URL de votre fichier slider (ex: slider_view.php)
+					// Si c'est le fichier actuel, mettez son nom ici
+					document.getElementById('previewFrame').src = 'ecran.php'; 
+					document.getElementById('previewModal').style.display = "block";
+				}
+
+				function closePreview() {
+					document.getElementById('previewModal').style.display = "none";
+					document.getElementById('previewFrame').src = ""; // Stop la vidéo/audio
+				}
+
+				// Fermer si on clique en dehors de la fenêtre
+				window.onclick = function(event) {
+					let modal = document.getElementById('previewModal');
+					if (event.target == modal) {
+						closePreview();
+					}
+				}
+
 			</script>
+
+
+
+
 			
 		</body>
 	
