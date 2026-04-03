@@ -218,7 +218,7 @@ Rouge :
 		exit;
 	}
 	
-$pdo = ConnexionPDO();
+	$pdo = ConnexionPDO();
 
 /* ****************************************************************************************************/ 
             
@@ -249,9 +249,7 @@ $pdo = ConnexionPDO();
 			'notesupport' => $_POST['notesupport'] ?? ''
 		]);
 	}
-
-                  
-					
+				
 					
 	if (($_GET['decouverte']!="")&&($_GET['id']!=""))	{
 		if ($_GET['decouverte']=="ok") {
@@ -287,11 +285,11 @@ $pdo = ConnexionPDO();
 /* Metéo */
 
 
-// Récupération des sliders
-$query = $pdo->query("SELECT * FROM odyslider WHERE slider_actif = 'OUI' ORDER BY id DESC");
-$slides = $query->fetchAll();
+	// Récupération des sliders
+	$query = $pdo->query("SELECT * FROM odyslider WHERE slider_actif = 'OUI' ORDER BY id DESC");
+	$slides = $query->fetchAll();
 
-$baseUrl = 'https://' . $_SERVER['HTTP_HOST'] . '/desire/fichiers/communs/slider/';
+	$baseUrl = 'https://' . $_SERVER['HTTP_HOST'] . '/desire/fichiers/communs/slider/';
 
 	/**
 	 * GESTION DE LA MÉTÉO (Optimisée) - VERSION PDO
