@@ -356,7 +356,8 @@
 			<!--begin::Menu- wrapper-->
 			<div class="btn btn-icon btn-custom btn-color-gray-600 btn-active-color-primary w-35px h-35px w-md-40px h-md-40px" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-trigger="{default: 'click', lg: 'hover'}">
 				<div id="menu_decouverte_navbar_rapide"> 
-					<i class="ki-duotone ki-notification-status  fs-2qx"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
+					<!-- <i class="ki-duotone ki-notification-status  fs-2qx"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i> -->
+					<i class="ki-duotone ki-category   fs-2qx"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>
 				</div>
 			</div><!--begin::Menu-->
 			<div class="menu menu-sub menu-sub-dropdown menu-column w-250px w-lg-325px" data-kt-menu="true">
