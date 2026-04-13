@@ -351,8 +351,6 @@
 				</div> 
 			</a> <!--end::Link-->	
  
-		
-				
 			<!--begin::Menu- wrapper-->
 			<div class="btn btn-icon btn-custom btn-color-gray-600 btn-active-color-primary w-35px h-35px w-md-40px h-md-40px" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-trigger="{default: 'click', lg: 'hover'}">
 				<div id="menu_decouverte_navbar_rapide"> 
@@ -424,13 +422,13 @@
 				if ($_SESSION['avatarData']!="") {
 			?>
 					<!-- class="" -->
-			<div id="menu_decouverte_profil" class="image-input-wrapper w-60px h-60px symbol symbol-80px symbol-circle  bg-light-info"  
-				style="background-image: url('data:image/jpeg;base64,<?php echo $_SESSION['avatarData']; ?>');
-				background-position: center;
-				background-repeat: no-repeat;
-				background-size: contain;
-				margin-right: 8px;
-				border-radius: .35rem;background-size: 100% 100%;"></div>
+				<div id="menu_decouverte_profil" class="image-input-wrapper w-60px h-60px symbol symbol-80px symbol-circle  bg-light-info"  
+					style="background-image: url('data:image/jpeg;base64,<?php echo $_SESSION['avatarData']; ?>');
+					background-position: center;
+					background-repeat: no-repeat;
+					background-size: contain;
+					margin-right: 8px;
+					border-radius: .35rem;background-size: 100% 100%;"></div>
 			<?php	
 				}
 				else {
@@ -579,12 +577,13 @@
 		<!--end::Action-->
 
 		<!--begin::Header menu toggle-->
-	<!--<div class="app-navbar-item ms-3 ms-lg-4 me-lg-6">
+		<!--
+		<div class="app-navbar-item ms-3 ms-lg-4 me-lg-6">
 			<div class="btn btn-icon btn-custom btn-color-gray-600 btn-active-color-primary w-35px h-35px w-md-40px h-md-40px" id="kt_app_aside_mobile_toggle">
 				<i class="ki-duotone ki-burger-menu-2 fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span></i>
 			</div>
 		</div>
-	-->
+		-->
 	
 	
 	</div><!--end::Navbar-->

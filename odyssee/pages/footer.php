@@ -1,7 +1,7 @@
 <div id="kt_app_footer" class="app-footer d-flex flex-column flex-md-row align-items-center justify-content-between py-3">
     <div class="text-gray-900 order-2 order-md-1">
         <span class="text-muted fw-semibold me-1">2026&copy;</span>
-        <a href="https://github.com/ZeCrusher/Extranet-Odyssee" target="_blank" class="text-gray-800 text-hover-primary fw-bold">ZeCrusher/Github</a>
+        <a href="https://github.com/ZeCrusher/Odyssee-Extranet-App" target="_blank" class="text-gray-800 text-hover-primary fw-bold">ZeCrusher/Github</a>
     </div>
     <ul class="menu menu-gray-600 menu-hover-primary fw-semibold order-1 mb-2 mb-md-0">
         <li class="menu-item">
