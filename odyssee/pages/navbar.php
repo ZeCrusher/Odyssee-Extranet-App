@@ -488,33 +488,54 @@
 			<!--  < ? php endif; ?>	 -->
 			
 		
-				<!--
-				<div class="menu-item px-5" data-kt-menu-offset="-15px, 0" data-kt-menu-placement="left-start" data-kt-menu-trigger="{default: 'click', lg: 'hover'}">
-					<a class="menu-link px-5" href="#"><span class="menu-title">Mon Extranet</span> 
-					< ?php 
-						if ($_SESSION['mode_eco']=="full") echo '<i class="ki-duotone ki-rocket fs-2"><span class="path1"></span><span class="path2"></span></i>';
-						if ($_SESSION['mode_eco']=="med") echo '<i class="ki-duotone ki-tree  fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>';
-						if ($_SESSION['mode_eco']=="light") echo '<i class="ki-duotone ki-abstract-46  fs-2"><span class="path1"></span><span class="path2"></span></i>';
-					?>	
-						<span class="menu-arrow"></span>
-					</a> 
-					<div class="menu-sub menu-sub-dropdown w-175px py-4">
-						
+					
+			<?php
+			// Définition des icônes
+			$icons = [
+				'full'  => '<i class="ki-duotone ki-rocket fs-2"><span class="path1"></span><span class="path2"></span></i>',
+				'med'   => '<i class="ki-duotone ki-tree fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>',
+				'light' => '<i class="ki-duotone ki-abstract-46 fs-2"><span class="path1"></span><span class="path2"></span></i>',
+			];
+
+			$mode = $_SESSION['mode_eco'] ?? 'light';
+			$icon = $icons[$mode] ?? '';
+			?>
+
+			<?php if (isset($_SESSION['monid']) && $_SESSION['monid'] == 1): ?>
+
+			<div class="menu-item px-5" data-kt-menu-offset="-15px, 0" data-kt-menu-placement="left-start" data-kt-menu-trigger="{default: 'click', lg: 'hover'}">
+				
+				<a class="menu-link px-5" href="#">
+					<span class="menu-title">Mon Extranet</span>
+					<?= $icon ?>
+					<span class="menu-arrow"></span>
+				</a>
+
+				<div class="menu-sub menu-sub-dropdown w-175px py-4">
+					
+					<?php
+					$modes = [
+						'light' => 'Léger',
+						'med'   => 'Medium',
+						'full'  => 'Complet',
+						'desire'=> 'Version 3'
+					];
+
+					foreach ($modes as $key => $label):
+					?>
 						<div class="menu-item px-3">
-							<a class="menu-link px-5" href="?mode=light">Léger</a>
+							<a class="menu-link px-5" href="?mode=<?= $key ?>">
+								<?= $label ?>
+							</a>
 						</div>
-						<div class="menu-item px-3">
-							<a class="menu-link px-5" href="?mode=med">Medium</a>
-						</div>
-						<div class="menu-item px-3">
-							<a class="menu-link px-5" href="?mode=full">Complet</a>
-						</div>
-						<div class="menu-item px-3">
-							<a class="menu-link px-5" href="?mode=desire">Version 3</a> 
-						</div>								
-					</div>
+					<?php endforeach; ?>
+
 				</div>
-				-->
+			</div>
+
+			<?php endif; ?>
+						 
+							<!-- -->
 				 
 				<!--begin::Menu separator-->
 				<div class="separator my-2"></div><!--end::Menu separator-->
