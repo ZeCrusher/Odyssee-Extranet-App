@@ -274,14 +274,11 @@ License:      free !!!! GNU
 						
 					
 					<?php 
-						$fil_ariane="Newsletters > Modèles";
-						$grand_titre="Bonjour ".$_SESSION['login'];
+						$fil_ariane="<a href=\"\" >Newsletters</a> > Modèles";
+						$grand_titre="Mes Sliders";
 						
 						$file = $_SERVER['DOCUMENT_ROOT']."/odyssee/pages/bonjour.php";
 						if (file_exists($file)) { include $file; } else {	echo "Le fichier bonjour est introuvable.";	}			
- 
-				 
-		
  
 						 
 					?>
@@ -303,22 +300,65 @@ License:      free !!!! GNU
 									} catch (Exception $e) {
 											die("Erreur : " . $e->getMessage());
 									}
+									
+																	
+									// On récupère le compte pour chaque écran (assurez-vous que les noms correspondent à votre champ 'service')
+									$queryCounts = $pdo->query("SELECT service, COUNT(*) as total FROM odyslider GROUP BY service");
+									$counts = $queryCounts->fetchAll(PDO::FETCH_KEY_PAIR);
+
+									// On définit des variables par défaut au cas où un écran n'a pas de slider
+									$countE1 = $counts['Ecran 1'] ?? 0;
+									$countE2 = $counts['Ecran 2'] ?? 0;
+									$countE3 = $counts['Accueil'] ?? 0;
+									$countE4 = $counts['Office de Tourisme'] ?? 0;	
+																		
 								?>
 
 									<div class="d-flex flex-stack mb-5">
-										<h1 class="fw-bold text-dark">Mes Sliders (Écrans)</h1>
-										<a href="add_slider.php" class="btn btn-primary">
-											<i class="ki-duotone ki-plus fs-2"></i> Nouveau Slider
-										</a>
+										
 										 
 									</div>
-									<div class="card-toolbar d-flex gap-2 mb-5">
-										<a href="display_type/e1.php" class="btn btn-sm btn-light-primary" target="blanck_"><img style="height: 30px;width:30px" src="img/shortcuts/slider-01.png" alt=""></a>
-										<a href="display_type/e2.php" class="btn btn-sm btn-light-primary" target="blanck_"><img style="height: 30px;width:30px;" src="img/shortcuts/slider-02.png" alt=""></a>
-										<a href="display_type/e3.php" class="btn btn-sm btn-light-primary" target="blanck_"><img style="height: 30px;width:30px;" src="img/shortcuts/slider-03.png" alt=""></a>
-										<a href="display_type/e4.php" class="btn btn-light-success" target="blanck_"><img style="height: 30px;width:30px;" src="img/shortcuts/slider-04.png" alt=""></a>
-										<!-- <a id="previewSite" class="btn btn-sm btn-primary">Aperçu</a> -->
-									</div>				
+									<div class="card-toolbar d-flex gap-4 mb-5">
+										<a href="display_type/e1.php" class="btn btn-sm btn-light-primary position-relative" target="_blank">
+											<img style="height: 30px; width:30px" src="img/shortcuts/slider-01.png" alt="">
+											<?php if($countE1 > 0): ?>
+												<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-success">
+													<?php echo $countE1; ?>
+												</span>
+											<?php endif; ?>
+										</a>
+
+										<a href="display_type/e2.php" class="btn btn-sm btn-light-primary position-relative" target="_blank">
+											<img style="height: 30px; width:30px;" src="img/shortcuts/slider-02.png" alt="">
+											<?php if($countE2 > 0): ?>
+												<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-success">
+													<?php echo $countE2; ?>
+												</span>
+											<?php endif; ?>
+										</a>
+
+										<a href="display_type/e3.php" class="btn btn-sm btn-light-primary position-relative" target="_blank">
+											<img style="height: 30px; width:30px;" src="img/shortcuts/slider-03.png" alt="">
+											<?php if($countE3 > 0): ?>
+												<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-success">
+													<?php echo $countE3; ?>
+												</span>
+											<?php endif; ?>
+										</a>
+
+										<a href="display_type/e4.php" class="btn btn-light-success position-relative" target="_blank">
+											<img style="height: 30px; width:30px;" src="img/shortcuts/slider-04.png" alt="">
+											<?php if($countE4 > 0): ?>
+												<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-success">
+													<?php echo $countE4; ?>
+												</span>
+											<?php endif; ?>
+										</a>
+
+										<button type="button" class="btn btn-light-success border border-dashed border-success" data-bs-toggle="modal" data-bs-target="#kt_modal_add_slider">
+											<i class="ki-duotone ki-plus fs-1 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+										</button>
+									</div>			
 
 									<div class="row g-6 g-xl-9">
 										<?php if (empty($sliders)): ?>
@@ -327,41 +367,39 @@ License:      free !!!! GNU
 											</div>
 										<?php else: ?>
 											<?php foreach($sliders as $s): ?>
-												<div class="col-md-6 col-xl-4">
+												<div class="col-md-6 col-xl-3">
 													<div class="card h-100 shadow-sm">
 														
 														<div class="card-header border-0 pt-5">
-															<h3 class="card-title align-items-start flex-column">
-																<span class="card-label fw-bold text-dark"><?php echo htmlspecialchars($s['slider_title']); ?></span>
-																<span class="text-muted mt-1 fw-semibold fs-7">Afficher sur : <?php echo htmlspecialchars($s['service']); ?></span>
-															</h3>
-															
-															<div class="card-toolbar">
-																<button class="btn btn-icon btn-color-gray-500 btn-active-color-primary justify-content-end show menu-dropdown  w-100px" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-overflow="true">   
-																	<i class="ki-duotone ki-dots-square fs-1"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i>                             
-																</button>
-																
-																<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary w-150px py-3" data-kt-menu="true">
+															<div class="d-flex align-items-start">
+																<h3 class="card-title align-items-start flex-column">
+																	<div class="d-flex align-items-center">
+																		<span class="card-label fw-bold text-dark me-2"><?php echo htmlspecialchars($s['slider_title']); ?></span>
+																		
+																		<button type="button" class="btn btn-clean btn-icon btn-sm btn-active-light-primary" 
+																				data-kt-menu-trigger="click" 
+																				data-kt-menu-placement="bottom-start">
+																			<i class="ki-duotone ki-dots-square fs-3">
+																				<span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span>
+																			</i>
+																		</button>
+
+																		<div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary w-150px py-3" data-kt-menu="true">
+																			<div class="menu-item px-3">
+																				<a href="javascript:void(0)" class="menu-link px-3 btn-rename" data-id="<?php echo $s['id']; ?>" data-name="<?php echo htmlspecialchars($s['slider_title']); ?>">Renommer</a>
+																			</div>
+																			<div class="menu-item px-3">
+																				<a href="javascript:void(0)" class="menu-link px-3 btn-duplicate" data-id="<?php echo $s['id']; ?>">Dupliquer</a>
+																			</div>
+																			<div class="menu-item px-3">
+																				<a href="javascript:void(0)" class="menu-link px-3 text-danger btn-delete" data-id="<?php echo $s['id']; ?>">Supprimer</a>
+																			</div>
+																		</div>
+																	</div>
 																	
-																	<div class="menu-item px-3">
-																		<a href="javascript:void(0)" class="menu-link px-3 btn-rename" data-id="<?php echo $s['id']; ?>" data-name="<?php echo htmlspecialchars($s['slider_title']); ?>">
-																			Renommer
-																		</a>
-																	</div>
-																	<div class="menu-item px-3">
-																		<a href="javascript:void(0)" class="menu-link px-3 btn-duplicate" data-id="<?php echo $s['id']; ?>">
-																			<!--  <i class="ki-duotone ki-copy fs-6"></i> --> Dupliquer
-																		</a>
-																	</div>
-																	<div class="menu-item px-3">
-																		<a href="javascript:void(0)" class="menu-link px-3 text-danger btn-delete" data-id="<?php echo $s['id']; ?>">
-																			Supprimer
-																		</a>
-																	</div>
-																</div>
+																	<span class="text-muted mt-1 fw-semibold fs-7">Afficher sur : <?php echo htmlspecialchars($s['service']); ?></span>
+																</h3>
 															</div>
-																													
-															
 														</div>
 
 														<div class="card-body p-0 position-relative" style="height: 200px; background-color: #f5f8fa; overflow: hidden;">
@@ -464,6 +502,64 @@ License:      free !!!! GNU
 		$file = $_SERVER['DOCUMENT_ROOT']."/odyssee/pages/widget-aide.php";
 		if (file_exists($file)) { include $file; } else {	echo "Le fichier fonctions est introuvable.";	}		
 	?>
+
+
+<div class="modal fade" id="kt_modal_add_slider" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="fw-bold">Ajouter un nouveau Slider</h2>
+                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                </div>
+            </div>
+
+            <form action="save_slider_new.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-body py-10 px-lg-17">
+                    <div class="fv-row mb-7">
+                        <label class="required fs-6 fw-semibold mb-2">Titre de la manifestation</label>
+                        <input type="text" class="form-control form-control-solid" name="slider_title" placeholder="Ex: Marché de Noël" required />
+                    </div>
+
+                    <div class="row g-9 mb-7">
+                        <div class="col-md-6 fv-row">
+                            <label class="required fs-6 fw-semibold mb-2">Assigner à l'écran</label>
+                            <select class="form-select form-control-solid" name="service" required>
+                                <option value="Ecran 1">Ecran 1</option>
+                                <option value="Ecran 2">Ecran 2</option>
+                                <option value="Accueil">Accueil</option>
+                                <option value="Office de Tourisme">Office de Tourisme</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 fv-row">
+                            <label class="fs-6 fw-semibold mb-2">Date de début</label>
+                            <input type="date" class="form-control form-control-solid" name="slider_date" value="<?php echo date('Y-m-d'); ?>" />
+                        </div>
+                    </div>
+
+                    <div class="fv-row mb-7">
+                        <label class="required fs-6 fw-semibold mb-2">Photo ou Vidéo (.jpg, .png, .mp4)</label>
+                        <input type="file" name="photo_file" class="form-control form-control-solid" required />
+                    </div>
+
+                    <div class="fv-row mb-7">
+                        <label class="fs-6 fw-semibold mb-2">Description</label>
+                        <textarea class="form-control form-control-solid" name="note" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer flex-center">
+                    <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="indicator-label">Créer le slider</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 			  
 	<!--end::Modals-->
