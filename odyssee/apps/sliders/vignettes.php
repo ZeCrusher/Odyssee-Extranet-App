@@ -274,7 +274,7 @@ License:      free !!!! GNU
 						
 					
 					<?php 
-						$fil_ariane="<a href=\"\" >Newsletters</a> > Modèles";
+						$fil_ariane="Sliders > Modèles";
 						$grand_titre="Mes Sliders";
 						
 						$file = $_SERVER['DOCUMENT_ROOT']."/odyssee/pages/bonjour.php";
@@ -355,9 +355,22 @@ License:      free !!!! GNU
 											<?php endif; ?>
 										</a>
 
-										<button type="button" class="btn btn-light-success border border-dashed border-success" data-bs-toggle="modal" data-bs-target="#kt_modal_add_slider">
-											<i class="ki-duotone ki-plus fs-1 text-success"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
-										</button>
+										<button type="submit" class="btn btn-light-success border border-dashed border-success" data-bs-toggle="modal" id="submitBtn" data-bs-target="#kt_modal_add_slider">
+											<i class="ki-duotone ki-plus fs-1 text-success indicator-label"><span class="path1"></span><span class="path2"></span><span class="path3"></span></i>
+											<span class="indicator-progress" style="display:none;">
+												Création... 
+												<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+											</span>
+										</button>  
+										
+										 <!-- <button type="submit" class="btn btn-primary" id="submitBtn">
+											<span class="indicator-label">Créer un slider</span>
+
+											<span class="indicator-progress" style="display:none;">
+												Création... 
+												<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+											</span>
+										</button>  -->
 									</div>			
 
 									<div class="row g-6 g-xl-9">
@@ -503,65 +516,138 @@ License:      free !!!! GNU
 		if (file_exists($file)) { include $file; } else {	echo "Le fichier fonctions est introuvable.";	}		
 	?>
 
+		<div class="modal fade" id="kt_modal_add_slider" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered mw-750px">
+				<div class="modal-content">
 
-<div class="modal fade" id="kt_modal_add_slider" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered mw-650px">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="fw-bold">Ajouter un nouveau Slider</h2>
-                <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
-                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
-                </div>
-            </div>
+					<!-- HEADER -->
+					<div class="modal-header">
+						<h2 class="fw-bold">Ajouter un nouveau Slider</h2>
 
-            <form action="save_slider_new.php" method="POST" enctype="multipart/form-data">
-                <div class="modal-body py-10 px-lg-17">
-                    <div class="fv-row mb-7">
-                        <label class="required fs-6 fw-semibold mb-2">Titre de la manifestation</label>
-                        <input type="text" class="form-control form-control-solid" name="slider_title" placeholder="Ex: Marché de Noël" required />
-                    </div>
+						<div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+							<i class="ki-duotone ki-cross fs-1"></i>
+						</div>
+					</div>
 
-                    <div class="row g-9 mb-7">
-                        <div class="col-md-6 fv-row">
-                            <label class="required fs-6 fw-semibold mb-2">Assigner à l'écran</label>
-                            <select class="form-select form-control-solid" name="service" required>
-                                <option value="Ecran 1">Ecran 1</option>
-                                <option value="Ecran 2">Ecran 2</option>
-                                <option value="Accueil">Accueil</option>
-                                <option value="Office de Tourisme">Office de Tourisme</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 fv-row">
-                            <label class="fs-6 fw-semibold mb-2">Date de début</label>
-                            <input type="date" class="form-control form-control-solid" name="slider_date" value="<?php echo date('Y-m-d'); ?>" />
-                        </div>
-                    </div>
+					<!-- FORM -->
+					<form id="sliderForm" enctype="multipart/form-data">
 
-                    <div class="fv-row mb-7">
-                        <label class="required fs-6 fw-semibold mb-2">Photo ou Vidéo (.jpg, .png, .mp4)</label>
-                        <input type="file" name="photo_file" class="form-control form-control-solid" required />
-                    </div>
+						<div class="modal-body py-8 px-lg-10">
 
-                    <div class="fv-row mb-7">
-                        <label class="fs-6 fw-semibold mb-2">Description</label>
-                        <textarea class="form-control form-control-solid" name="note" rows="3"></textarea>
-                    </div>
-                </div>
+							<!-- TITRE -->
+							<div class="fv-row mb-7">
+								<label class="required fs-6 fw-semibold mb-2">Titre</label>
+								<input type="text" class="form-control form-control-solid"
+									   name="slider_title"
+									   placeholder="Ex: Marché de Noël"
+									   required />
+							</div>
 
-                <div class="modal-footer flex-center">
-                    <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-primary">
-                        <span class="indicator-label">Créer le slider</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+							<!-- SERVICE + DATE -->
+							<div class="row g-9 mb-7">
 
+								<div class="col-md-6 fv-row">
+									<label class="required fs-6 fw-semibold mb-2">Écran</label>
+									<select class="form-select form-control-solid" name="service" required>
+										<option value="Ecran 1">Ecran 1</option>
+										<option value="Ecran 2">Ecran 2</option>
+										<option value="Ecran 3">Ecran 3</option>
+										<option value="Ecran 4">Ecran 4</option>
+										<option value="MagicInfo">MagicInfo</option>
+										<option value="NON">Désactiver</option>
+									</select>
+								</div>
 
+								<div class="col-md-6 fv-row">
+									<label class="fs-6 fw-semibold mb-2">Date</label>
+									<input type="date"
+										   class="form-control form-control-solid"
+										   name="slider_date"
+										   value="<?php echo date('Y-m-d'); ?>" />
+								</div>
 
-			  
+							</div>
+
+							<!-- FILE UPLOAD -->
+							<div class="fv-row mb-5">
+								<label class="required fs-6 fw-semibold mb-2">
+									Fichier (.jpg, .png, .mp4)
+								</label>
+
+								<input type="file"
+									   name="photo_file"
+									   class="form-control form-control-solid"
+									   required />
+
+								<!-- PROGRESS SAAS -->
+								<div class="mt-4">
+
+									<div class="d-flex justify-content-between mb-1">
+										<small>Upload</small>
+										<small id="percent">0%</small>
+									</div>
+
+									<div class="progress" style="height: 8px;">
+										<div id="progressBar"
+											 class="progress-bar"
+											 style="width:0%"></div>
+									</div>
+
+									<div id="status" class="mt-2 small"></div>
+
+								</div>
+							</div>
+
+							<!-- DESCRIPTION -->
+							<div class="fv-row mb-7">
+								<label class="fs-6 fw-semibold mb-2">Description</label>
+								<textarea class="form-control form-control-solid"
+										  name="note"
+										  rows="3"></textarea>
+							</div>
+
+							<!-- 🔥 GALERIE FICHIERS EXISTANTS -->
+							<div class="mt-8">
+
+								<div class="d-flex justify-content-between align-items-center mb-2">
+									<h5 class="mb-0">Fichiers existants</h5>
+									<button type="button" class="btn btn-sm btn-light" onclick="loadFiles()">Actualiser</button>
+								</div>
+
+								<div class="row" id="fileList">
+									<!-- AJAX injecte ici -->
+								</div>
+
+							</div>
+
+						</div>
+
+						<!-- FOOTER -->
+						<div class="modal-footer flex-center">
+
+							<button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">
+								Annuler
+							</button>
+
+							<button type="submit" class="btn btn-primary" id="submitBtn">
+
+								<span class="indicator-label">Créer le slider</span>
+
+								<span class="indicator-progress" style="display:none;">
+									Création...
+									<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+								</span>
+
+							</button>
+
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+					  
 	<!--end::Modals-->
  
  
@@ -572,45 +658,103 @@ License:      free !!!! GNU
 
 
 		<!-- En test pour le moment -->
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/themes/Animated.js"></script>
-		<!-- En test pour le moment -->
 
 			
 			<!--begin::Vendors Javascript(used for this page only)-->
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/index.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/xy.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/percent.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/radar.js"></script>
 
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/map.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/';?>assets/js/geodata/worldLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/continentsLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/usaLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/worldTimeZonesLow.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/geodata/worldTimeZoneAreasLow.js"></script>
 			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/custom/datatables/datatables.bundle.js"></script> 
 			<!--end::Vendors Javascript-->
 				
-			<!--begin::Custom Javascript(used for this page only)-->
-			 <script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/widgets.bundle.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/widgets.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/apps/chat/chat.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/upgrade-plan.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/create-account.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/create-app.js"></script>
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/js/custom/utilities/modals/users-search.js"></script>  
-			<!--end::Custom Javascript-->
 
-
-
-
-		<!--end::Javascript-->			
 			<script>
+			document.addEventListener('DOMContentLoaded', function () {
+
+				const form = document.querySelector('#kt_modal_add_slider #sliderForm');
+				const btn = document.getElementById('submitBtn');
+				const progressBar = document.getElementById('progressBar');
+				const percent = document.getElementById('percent');
+				const status = document.getElementById('status');
+
+				if (!form) return;
+
+				form.addEventListener('submit', function (e) {
+					e.preventDefault();
+
+					const formData = new FormData(this);
+					const xhr = new XMLHttpRequest();
+
+					// UI LOADING STATE
+					btn.disabled = true;
+					btn.querySelector('.indicator-label').style.display = 'none';
+					btn.querySelector('.indicator-progress').style.display = 'inline-flex';
+
+					status.innerHTML = "⏳ Upload en cours...";
+
+					xhr.open("POST", "save_slider_new.php", true);
+
+					// PROGRESS
+					xhr.upload.onprogress = function (e) {
+						if (e.lengthComputable) {
+							let percentValue = (e.loaded / e.total) * 100;
+
+							progressBar.style.width = percentValue + "%";
+							percent.innerText = Math.round(percentValue) + "%";
+						}
+					};
+
+					// SUCCESS
+					xhr.onload = function () {
+
+						btn.disabled = false;
+						btn.querySelector('.indicator-label').style.display = 'inline';
+						btn.querySelector('.indicator-progress').style.display = 'none';
+
+						if (xhr.status === 200) {
+
+							status.innerHTML = "✅ Slider créé avec succès";
+
+							progressBar.style.width = "100%";
+
+							setTimeout(() => {
+								const modal = bootstrap.Modal.getInstance(
+									document.getElementById('kt_modal_add_slider')
+								);
+								modal.hide();
+
+								// reset UI
+								form.reset();
+								progressBar.style.width = "0%";
+								percent.innerText = "0%";
+								status.innerHTML = "";
+								
+								window.location.reload(); // 🔥 refresh page
+
+							}, 1200);
+
+						} else {
+							status.innerHTML = "❌ Erreur serveur";
+						}
+						
+						
+					 
+						
+					};
+
+					xhr.onerror = function () {
+						btn.disabled = false;
+						status.innerHTML = "❌ Erreur réseau";
+					};
+
+					xhr.send(formData);
+				});
+
+			});
+
 
 				$(document).ready(function() {
+
 					// --- RENOMMER ---
-					$('.btn-rename').on('click', function() {
+					$(document).on('click', '.btn-rename', function() {
 						const id = $(this).data('id');
 						const oldName = $(this).data('name');
 
@@ -630,8 +774,9 @@ License:      free !!!! GNU
 					});
 
 					// --- DUPLIQUER ---
-					$('.btn-duplicate').on('click', function() {
+					$(document).on('click', '.btn-duplicate', function() {
 						const id = $(this).data('id');
+
 						Swal.fire({
 							title: 'Dupliquer ce slider ?',
 							text: "Une copie identique sera créée.",
@@ -647,8 +792,9 @@ License:      free !!!! GNU
 					});
 
 					// --- SUPPRIMER ---
-					$('.btn-delete').on('click', function() {
+					$(document).on('click', '.btn-delete', function() {
 						const id = $(this).data('id');
+
 						Swal.fire({
 							title: 'Supprimer ce slider ?',
 							text: "Cette action est irréversible !",
@@ -658,12 +804,19 @@ License:      free !!!! GNU
 							confirmButtonColor: '#f1416c'
 						}).then((result) => {
 							if (result.isConfirmed) {
-								window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=delete&id=${id}`;
+												window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=delete&id=${id}`;
 							}
 						});
 					});
+
 				});
+
+
+			
 			</script>
+			
+			
+			
 			
 		</body>
 	
