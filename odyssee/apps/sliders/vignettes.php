@@ -420,7 +420,7 @@ License:      free !!!! GNU
 															<?php 
 																$fileName = trim($s['photo']);
 																$encodedFile = rawurlencode($fileName);
-																$path = "https://extranet.martigues-tourisme.com/desire/fichiers/communs/slider/img/"  . $encodedFile;
+																$path = "upload/"  . $encodedFile;
 
 																// Équivalent de str_ends_with en PHP 7.x
 																$extension = '.mp4';
@@ -570,14 +570,33 @@ License:      free !!!! GNU
 
 							<!-- FILE UPLOAD -->
 							<div class="fv-row mb-5">
+								<label class="required fs-6 fw-semibold mb-2">Gestion des fichier (.jpg, .png, .mp4)</label>
+								
+								
+								<p>Photo déjà disponible sur le Serveur Extranet :</p> 
+								<select name="photo" class="form-select form-control-solid" data-control="select2" data-placeholder="Choisir un fichier existant" id="kt_select2_with_image">
+									<option value="NON">Pas de photo</option>
+									<?php 
+										$files = glob(dirname(__FILE__) . '/upload/*');
+										foreach($files as $filename) {
+											$name = basename($filename);
+											$ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+											$isImage = in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+											
+											// Si c'est une vidéo, on peut mettre une icône par défaut
+											$thumb = $isImage ? 'upload/'.$name : 'img/blank-image.svg';
+											
+											echo "<option value='" . $name . "' data-kt-select2-image='" . $thumb . "'>" . $name . "</option>";
+										}
+									?>
+								</select>				
+							</div>
+							<div class="fv-row mb-5">
 								<label class="required fs-6 fw-semibold mb-2">
-									Fichier (.jpg, .png, .mp4)
+									Ou ajouter une vidéo/photo
 								</label>
-
-								<input type="file"
-									   name="photo_file"
-									   class="form-control form-control-solid"
-									   required />
+								
+								<input type="file" name="photo_file"  class="form-control form-control-solid" />
 
 								<!-- PROGRESS SAAS -->
 								<div class="mt-4">
@@ -605,217 +624,323 @@ License:      free !!!! GNU
 										  name="note"
 										  rows="3"></textarea>
 							</div>
-
-							<!-- 🔥 GALERIE FICHIERS EXISTANTS -->
-							<div class="mt-8">
-
-								<div class="d-flex justify-content-between align-items-center mb-2">
-									<h5 class="mb-0">Fichiers existants</h5>
-									<button type="button" class="btn btn-sm btn-light" onclick="loadFiles()">Actualiser</button>
-								</div>
-
-								<div class="row" id="fileList">
-									<!-- AJAX injecte ici -->
-								</div>
-
-							</div>
-
+						
 						</div>
 
 						<!-- FOOTER -->
 						<div class="modal-footer flex-center">
-
-							<button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">
-								Annuler
-							</button>
-
+							<button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Annuler</button>
 							<button type="submit" class="btn btn-primary" id="submitBtn">
-
 								<span class="indicator-label">Créer le slider</span>
-
 								<span class="indicator-progress" style="display:none;">
 									Création...
 									<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
 								</span>
-
 							</button>
-
 						</div>
-
 					</form>
 
 				</div>
 			</div>
-		</div>
-					  
-	<!--end::Modals-->
+		</div>	  
+		<!--end::Modals-->
+		 
  
- 
- 			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>js/scripts.bundle.js"></script>
- 
+		<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>js/scripts.bundle.js"></script>
 		<!--begin::Javascript-->
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/global/plugins.bundle.js"></script>
-
+		<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/global/plugins.bundle.js"></script>
 
 		<!-- En test pour le moment -->
+		<!--begin::Vendors Javascript(used for this page only)-->
 
-			
-			<!--begin::Vendors Javascript(used for this page only)-->
-
-			<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/custom/datatables/datatables.bundle.js"></script> 
-			<!--end::Vendors Javascript-->
+		<script src="<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>assets/plugins/custom/datatables/datatables.bundle.js"></script> 
+		<!--end::Vendors Javascript-->
 				
 
-			<script>
-			document.addEventListener('DOMContentLoaded', function () {
+	<script>
 
-				const form = document.querySelector('#kt_modal_add_slider #sliderForm');
-				const btn = document.getElementById('submitBtn');
-				const progressBar = document.getElementById('progressBar');
-				const percent = document.getElementById('percent');
-				const status = document.getElementById('status');
 
-				if (!form) return;
 
-				form.addEventListener('submit', function (e) {
-					e.preventDefault();
+			$(document).ready(function() {
+				// On récupère les paramètres de l'URL
+				const urlParams = new URLSearchParams(window.location.search);
 
-					const formData = new FormData(this);
-					const xhr = new XMLHttpRequest();
-
-					// UI LOADING STATE
-					btn.disabled = true;
-					btn.querySelector('.indicator-label').style.display = 'none';
-					btn.querySelector('.indicator-progress').style.display = 'inline-flex';
-
-					status.innerHTML = "⏳ Upload en cours...";
-
-					xhr.open("POST", "save_slider_new.php", true);
-
-					// PROGRESS
-					xhr.upload.onprogress = function (e) {
-						if (e.lengthComputable) {
-							let percentValue = (e.loaded / e.total) * 100;
-
-							progressBar.style.width = percentValue + "%";
-							percent.innerText = Math.round(percentValue) + "%";
-						}
-					};
-
-					// SUCCESS
-					xhr.onload = function () {
-
-						btn.disabled = false;
-						btn.querySelector('.indicator-label').style.display = 'inline';
-						btn.querySelector('.indicator-progress').style.display = 'none';
-
-						if (xhr.status === 200) {
-
-							status.innerHTML = "✅ Slider créé avec succès";
-
-							progressBar.style.width = "100%";
-
-							setTimeout(() => {
-								const modal = bootstrap.Modal.getInstance(
-									document.getElementById('kt_modal_add_slider')
-								);
-								modal.hide();
-
-								// reset UI
-								form.reset();
-								progressBar.style.width = "0%";
-								percent.innerText = "0%";
-								status.innerHTML = "";
-								
-								window.location.reload(); // 🔥 refresh page
-
-							}, 1200);
-
-						} else {
-							status.innerHTML = "❌ Erreur serveur";
-						}
-						
-						
-					 
-						
-					};
-
-					xhr.onerror = function () {
-						btn.disabled = false;
-						status.innerHTML = "❌ Erreur réseau";
-					};
-
-					xhr.send(formData);
-				});
-
+				// On vérifie si le paramètre 'success' est présent et vaut 'created'
+				if (urlParams.get('success') === 'created') {
+					Swal.fire({
+						title: 'Parfait !',
+						text: 'Votre nouveau slider a été créé avec succès.',
+						icon: 'success',
+						confirmButtonColor: '#009ef7',
+						confirmButtonText: 'Super !'
+					}).then(() => {
+						// Optionnel : On nettoie l'URL pour enlever le "?success=created" 
+						// afin d'éviter que la popup ne réapparaisse si l'utilisateur rafraîchit manuellement.
+						window.history.replaceState({}, document.title, window.location.pathname);
+					});
+				}
 			});
 
 
-				$(document).ready(function() {
 
-					// --- RENOMMER ---
-					$(document).on('click', '.btn-rename', function() {
-						const id = $(this).data('id');
-						const oldName = $(this).data('name');
+			$(document).ready(function() {
+				// 1. Formatage Select2
+				const formatSelection = (item) => {
+					if (!item.id || item.id === 'NON') return item.text;
+					const imgUrl = $(item.element).data('kt-select2-image');
+					return $(`
+						<div class="d-flex align-items-center">
+							<img src="${imgUrl}" class="rounded-1 me-3" style="width:30px; height:30px; object-fit:cover;" />
+							<span class="fw-bold">${item.text}</span>
+						</div>
+					`);
+				};
 
-						Swal.fire({
-							title: 'Renommer le slider',
-							input: 'text',
-							inputValue: oldName,
-							showCancelButton: true,
-							confirmButtonText: 'Mettre à jour',
-							cancelButtonText: 'Annuler',
-							confirmButtonColor: '#009ef7'
-						}).then((result) => {
-							if (result.isConfirmed && result.value) {
-								window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=rename&id=${id}&name=${encodeURIComponent(result.value)}`;
+				// 2. Initialisation Select2
+				const $selectServer = $('#kt_select2_with_image');
+				const $inputUpload = $('input[name="photo_file"]');
+
+				$selectServer.select2({
+					templateResult: formatSelection,
+					templateSelection: formatSelection,
+					minimumResultsForSearch: 5
+				});
+
+				// 3. LOGIQUE D'EXCLUSION (Le correctif demandé)
+				$selectServer.on('change', function () {
+					if ($(this).val() !== "NON") {
+						$inputUpload.val(''); // Vide le fichier local
+					}
+				});
+
+				$inputUpload.on('change', function () {
+					if (this.value !== "") {
+						$selectServer.val('NON').trigger('change'); // Réinitialise le select serveur
+					}
+				});
+			});
+
+				document.addEventListener('DOMContentLoaded', function () {
+
+					// Appeler la fonction ici pour charger les fichiers dès l'ouverture
+					loadFiles();
+
+					const form = document.querySelector('#kt_modal_add_slider #sliderForm');
+					const btn = document.getElementById('submitBtn');
+					const progressBar = document.getElementById('progressBar');
+					const percent = document.getElementById('percent');
+					const status = document.getElementById('status');
+
+					if (!form) {
+						console.error("Form introuvable");
+						return;
+					}
+
+					form.addEventListener('submit', function (e) {
+						e.preventDefault();
+
+						const formData = new FormData(form);
+						const xhr = new XMLHttpRequest();
+
+						// UI LOADING
+						btn.disabled = true;
+						btn.querySelector('.indicator-label').style.display = 'none';
+						btn.querySelector('.indicator-progress').style.display = 'inline-flex';
+
+						status.innerHTML = "Upload en cours...";
+
+						xhr.open("POST", "save_slider_new.php", true);
+
+						// PROGRESS
+						xhr.upload.onprogress = function (e) {
+							if (e.lengthComputable) {
+								let percentValue = (e.loaded / e.total) * 100;
+
+								progressBar.style.width = percentValue + "%";
+								percent.innerText = Math.round(percentValue) + "%";
 							}
-						});
-					});
+						};
 
-					// --- DUPLIQUER ---
-					$(document).on('click', '.btn-duplicate', function() {
-						const id = $(this).data('id');
+						// SUCCESS
+						xhr.onload = function () {
 
-						Swal.fire({
-							title: 'Dupliquer ce slider ?',
-							text: "Une copie identique sera créée.",
-							icon: 'question',
-							showCancelButton: true,
-							confirmButtonText: 'Oui, dupliquer',
-							confirmButtonColor: '#50cd89'
-						}).then((result) => {
-							if (result.isConfirmed) {
-								window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=duplicate&id=${id}`;
+							btn.disabled = false;
+							btn.querySelector('.indicator-label').style.display = 'inline';
+							btn.querySelector('.indicator-progress').style.display = 'none';
+
+							if (xhr.status === 200) {
+
+								status.innerHTML = "Slider créé avec succès";
+
+								progressBar.style.width = "100%";
+
+								// refresh galerie
+								loadFiles();
+
+								setTimeout(() => {
+
+									// const modal = bootstrap.Modal.getInstance(
+										// document.getElementById('kt_modal_add_slider')
+									// );
+
+									if (modal) modal.hide();
+
+									// reset UI
+									form.reset();
+									progressBar.style.width = "0%";
+									percent.innerText = "0%";
+									status.innerHTML = "";
+									
+									window.location.href = 'vignettes_sliders.php?success=created';
+
+								}, 800);
+
+							} else {
+								status.innerHTML = "Erreur serveur";
 							}
-						});
-					});
+						};
 
-					// --- SUPPRIMER ---
-					$(document).on('click', '.btn-delete', function() {
-						const id = $(this).data('id');
+						xhr.onerror = function () {
+							btn.disabled = false;
+							status.innerHTML = "Erreur réseau";
+						};
 
-						Swal.fire({
-							title: 'Supprimer ce slider ?',
-							text: "Cette action est irréversible !",
-							icon: 'warning',
-							showCancelButton: true,
-							confirmButtonText: 'Supprimer',
-							confirmButtonColor: '#f1416c'
-						}).then((result) => {
-							if (result.isConfirmed) {
-												window.location.href = `<?php echo 'https://'.$_SERVER['HTTP_HOST'].'/odyssee/'; ?>apps/sliders/actions_slider.php?action=delete&id=${id}`;
-							}
-						});
+						xhr.send(formData);
 					});
 
 				});
 
 
-			
-			</script>
-			
-			
+/* chargement fichiers dans modal */
+
+			 
+			function loadFiles() {
+				fetch('get_files.php')
+					.then(res => {
+						if (!res.ok) throw new Error("Erreur HTTP " + res.status);
+						return res.text(); // On récupère d'abord en texte pour vérifier
+					})
+					.then(text => {
+						try {
+							const files = JSON.parse(text); // On tente de parser manuellement
+							let html = "";
+
+						files.forEach(file => {
+
+							const ext = file.split('.').pop().toLowerCase();
+							const isImage = ['jpg','jpeg','png','gif','webp'].includes(ext);
+
+							html += `
+								<div class="col-md-3 mb-4">
+									<div class="card shadow-sm">
+
+										${isImage ? `
+											<img src="upload/${file}" class="card-img-top" style="height:160px; object-fit:cover;">
+										` : `
+											<div class="d-flex align-items-center justify-content-center bg-light"
+												 style="height:160px;">
+												${ext.toUpperCase()}
+											</div>
+										`}
+
+										<div class="card-body text-center">
+
+											<small class="text-truncate d-block text-muted">
+												${file}
+											</small>
+
+											<a href="upload/${file}" target="_blank"
+											   class="btn btn-sm btn-primary mt-2">
+												Ouvrir
+											</a>
+
+										</div>
+
+									</div>
+								</div>
+							`;
+						});
+						
+						
+						
+
+						if (files.length === 0) html = "<p>Aucun fichier.</p>";
+							
+							files.forEach(file => { /* ... ton code actuel ... */ });
+							document.getElementById('fileList').innerHTML = html;
+						} catch (err) {
+							console.error("Le serveur n'a pas renvoyé du JSON :", text);
+						}
+					})
+					.catch(err => console.error("Erreur Fetch :", err));
+			}		 
+
+
+
+
+
+
+								$(document).ready(function() {
+
+									$(document).on('click', '.btn-rename', function() {
+										const id = $(this).data('id');
+										const oldName = $(this).data('name');
+
+										Swal.fire({
+											title: 'Renommer le slider',
+											input: 'text',
+											inputValue: oldName,
+											showCancelButton: true,
+											confirmButtonText: 'Mettre à jour',
+											cancelButtonText: 'Annuler',
+											confirmButtonColor: '#009ef7'
+										}).then((result) => {
+											if (result.isConfirmed && result.value) {
+												window.location.href =
+													`actions_slider.php?action=rename&id=${id}&name=${encodeURIComponent(result.value)}`;
+											}
+										});
+									});
+
+									$(document).on('click', '.btn-duplicate', function() {
+										const id = $(this).data('id');
+
+										Swal.fire({
+											title: 'Dupliquer ce slider ?',
+											icon: 'question',
+											showCancelButton: true,
+											confirmButtonText: 'Oui',
+											confirmButtonColor: '#50cd89'
+										}).then((result) => {
+											if (result.isConfirmed) {
+												window.location.href =
+													`actions_slider.php?action=duplicate&id=${id}`;
+											}
+										});
+									});
+
+									$(document).on('click', '.btn-delete', function() {
+										const id = $(this).data('id');
+
+										Swal.fire({
+											title: 'Supprimer ce slider ?',
+											icon: 'warning',
+											showCancelButton: true,
+											confirmButtonText: 'Supprimer',
+											confirmButtonColor: '#f1416c'
+										}).then((result) => {
+											if (result.isConfirmed) {
+												window.location.href =
+													`actions_slider.php?action=delete&id=${id}`;
+											}
+										});
+									});
+
+								});
+
+		</script>
+											
+						
 			
 			
 		</body>
