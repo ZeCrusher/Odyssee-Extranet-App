@@ -89,7 +89,7 @@ session_start();
 			':mode'        => 'standard'
 		]);
 
-		// echo "✅ Insertion réussie ! ID = " . $pdo->lastInsertId();
+		// echo "Insertion réussie ! ID = " . $pdo->lastInsertId();
 
 	} catch (PDOException $e) {
 		http_response_code(500);
