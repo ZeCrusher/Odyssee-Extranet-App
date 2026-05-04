@@ -778,20 +778,7 @@ License:      free !!!! GNU
 								loadFiles();
 
 								setTimeout(() => {
-
-									// const modal = bootstrap.Modal.getInstance(
-										// document.getElementById('kt_modal_add_slider')
-									// );
-
-									if (modal) modal.hide();
-
-									// reset UI
-									form.reset();
-									progressBar.style.width = "0%";
-									percent.innerText = "0%";
-									status.innerHTML = "";
-									
-									window.location.href = 'vignettes_sliders.php?success=created';
+									window.location.href = 'vignettes.php?success=created';
 
 								}, 800);
 
