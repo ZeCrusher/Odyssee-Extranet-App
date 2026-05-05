@@ -668,11 +668,11 @@ License:      free !!!! GNU
 				// On vérifie si le paramètre 'success' est présent et vaut 'created'
 				if (urlParams.get('success') === 'created') {
 					Swal.fire({
-						title: 'Parfait !',
+						title: 'Création effectué !',
 						text: 'Votre nouveau slider a été créé avec succès.',
 						icon: 'success',
-						confirmButtonColor: '#009ef7',
-						confirmButtonText: 'Super !'
+						confirmButtonColor: '#4fc9da',
+						confirmButtonText: 'OK'
 					}).then(() => {
 						// Optionnel : On nettoie l'URL pour enlever le "?success=created" 
 						// afin d'éviter que la popup ne réapparaisse si l'utilisateur rafraîchit manuellement.
@@ -720,46 +720,44 @@ License:      free !!!! GNU
 				});
 			});
 
-				document.addEventListener('DOMContentLoaded', function () {
+			document.addEventListener('DOMContentLoaded', function () {
 
-					// Appeler la fonction ici pour charger les fichiers dès l'ouverture
-					loadFiles();
+				// Appeler la fonction ici pour charger les fichiers dès l'ouverture
+				loadFiles();
 
-					const form = document.querySelector('#kt_modal_add_slider #sliderForm');
-					const btn = document.getElementById('submitBtn');
-					const progressBar = document.getElementById('progressBar');
-					const percent = document.getElementById('percent');
-					const status = document.getElementById('status');
+				const form = document.querySelector('#kt_modal_add_slider #sliderForm');
+				const btn = document.getElementById('submitBtn');
+				const progressBar = document.getElementById('progressBar');
+				const percent = document.getElementById('percent');
+				const status = document.getElementById('status');
 
-					if (!form) {
-						console.error("Form introuvable");
-						return;
-					}
+				if (!form) {
+					console.error("Form introuvable");
+					return;
+				}
 
-					form.addEventListener('submit', function (e) {
-						e.preventDefault();
+				form.addEventListener('submit', function (e) {
+					e.preventDefault();
 
-						const formData = new FormData(form);
-						const xhr = new XMLHttpRequest();
+					const formData = new FormData(form);
+					const xhr = new XMLHttpRequest();
 
-						// UI LOADING
-						btn.disabled = true;
-						btn.querySelector('.indicator-label').style.display = 'none';
-						btn.querySelector('.indicator-progress').style.display = 'inline-flex';
+					// UI LOADING
+					btn.disabled = true;
+					btn.querySelector('.indicator-label').style.display = 'none';
+					btn.querySelector('.indicator-progress').style.display = 'inline-flex';
 
 						status.innerHTML = "Upload en cours...";
-
 						xhr.open("POST", "save_slider_new.php", true);
 
-						// PROGRESS
-						xhr.upload.onprogress = function (e) {
-							if (e.lengthComputable) {
-								let percentValue = (e.loaded / e.total) * 100;
-
+					// PROGRESS
+					xhr.upload.onprogress = function (e) {
+						if (e.lengthComputable) {
+							let percentValue = (e.loaded / e.total) * 100;
 								progressBar.style.width = percentValue + "%";
-								percent.innerText = Math.round(percentValue) + "%";
-							}
-						};
+							percent.innerText = Math.round(percentValue) + "%";
+						}
+					};
 
 						// SUCCESS
 						xhr.onload = function () {
@@ -779,7 +777,6 @@ License:      free !!!! GNU
 
 								setTimeout(() => {
 									window.location.href = 'vignettes.php?success=created';
-
 								}, 800);
 
 							} else {
@@ -864,30 +861,27 @@ License:      free !!!! GNU
 
 
 
+			$(document).ready(function() {
 
+				$(document).on('click', '.btn-rename', function() {
+					const id = $(this).data('id');
+					const oldName = $(this).data('name');
 
-
-								$(document).ready(function() {
-
-									$(document).on('click', '.btn-rename', function() {
-										const id = $(this).data('id');
-										const oldName = $(this).data('name');
-
-										Swal.fire({
-											title: 'Renommer le slider',
-											input: 'text',
-											inputValue: oldName,
-											showCancelButton: true,
-											confirmButtonText: 'Mettre à jour',
-											cancelButtonText: 'Annuler',
-											confirmButtonColor: '#009ef7'
-										}).then((result) => {
-											if (result.isConfirmed && result.value) {
-												window.location.href =
-													`actions_slider.php?action=rename&id=${id}&name=${encodeURIComponent(result.value)}`;
-											}
-										});
-									});
+						Swal.fire({
+							title: 'Renommer le slider',
+							input: 'text',
+							inputValue: oldName,
+							showCancelButton: true,
+							confirmButtonText: 'Mettre à jour',
+							cancelButtonText: 'Annuler',
+							confirmButtonColor: '#4fc9da'
+						}).then((result) => {
+							if (result.isConfirmed && result.value) {
+								window.location.href =
+									`actions_slider.php?action=rename&id=${id}&name=${encodeURIComponent(result.value)}`;
+							}
+						});
+					});
 
 									$(document).on('click', '.btn-duplicate', function() {
 										const id = $(this).data('id');
@@ -897,7 +891,8 @@ License:      free !!!! GNU
 											icon: 'question',
 											showCancelButton: true,
 											confirmButtonText: 'Oui',
-											confirmButtonColor: '#50cd89'
+											cancelButtonText: 'Annuler',
+											confirmButtonColor: '#4fc9da'
 										}).then((result) => {
 											if (result.isConfirmed) {
 												window.location.href =
@@ -914,7 +909,8 @@ License:      free !!!! GNU
 											icon: 'warning',
 											showCancelButton: true,
 											confirmButtonText: 'Supprimer',
-											confirmButtonColor: '#f1416c'
+											cancelButtonText: 'Annuler',
+											confirmButtonColor: '#f06445'
 										}).then((result) => {
 											if (result.isConfirmed) {
 												window.location.href =
