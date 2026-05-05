@@ -883,43 +883,43 @@ License:      free !!!! GNU
 						});
 					});
 
-									$(document).on('click', '.btn-duplicate', function() {
-										const id = $(this).data('id');
+					$(document).on('click', '.btn-duplicate', function() {
+						const id = $(this).data('id');
 
-										Swal.fire({
-											title: 'Dupliquer ce slider ?',
-											icon: 'question',
-											showCancelButton: true,
-											confirmButtonText: 'Oui',
-											cancelButtonText: 'Annuler',
-											confirmButtonColor: '#4fc9da'
-										}).then((result) => {
-											if (result.isConfirmed) {
-												window.location.href =
-													`actions_slider.php?action=duplicate&id=${id}`;
-											}
-										});
-									});
+					Swal.fire({
+					title: 'Dupliquer ce slider ?',
+								icon: 'question',
+								showCancelButton: true,
+								confirmButtonText: 'Oui',
+								cancelButtonText: 'Annuler',
+								confirmButtonColor: '#4fc9da'
+							}).then((result) => {
+								if (result.isConfirmed) {
+									window.location.href =
+										`actions_slider.php?action=duplicate&id=${id}`;
+								}
+							});
+						});
 
-									$(document).on('click', '.btn-delete', function() {
-										const id = $(this).data('id');
+					$(document).on('click', '.btn-delete', function() {
+					
+						const id = $(this).data('id');
 
-										Swal.fire({
-											title: 'Supprimer ce slider ?',
-											icon: 'warning',
-											showCancelButton: true,
-											confirmButtonText: 'Supprimer',
-											cancelButtonText: 'Annuler',
-											confirmButtonColor: '#f06445'
-										}).then((result) => {
-											if (result.isConfirmed) {
-												window.location.href =
-													`actions_slider.php?action=delete&id=${id}`;
-											}
-										});
-									});
+						Swal.fire({
+							title: 'Supprimer ce slider ?',
+							icon: 'warning',
+							showCancelButton: true,
+							confirmButtonText: 'Supprimer',
+							cancelButtonText: 'Annuler',
+							confirmButtonColor: '#f06445'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.href =`actions_slider.php?action=delete&id=${id}`;
+							}
+						});
+					});
 
-								});
+				});
 
 		</script>
 											
