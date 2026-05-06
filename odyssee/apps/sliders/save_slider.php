@@ -23,14 +23,58 @@
 	$photo_sql = "";
 	$cleanName = "";
 
+	// if (!empty($_FILES['photo_file']['name'])) {
+		// $fileName = $_FILES['photo_file']['name']; 	// Nettoyage du nom de fichier (enlève espaces et accents)
+		// $cleanName = str_replace(' ', '_', $fileName);
+		// $targetPath = "upload/" . $cleanName;
+		// if (move_uploaded_file($_FILES['photo_file']['tmp_name'], $targetPath)) {
+			// $photo_sql = ", photo = ?";
+		// }
+	// }
+	
+	
+	// 
+	$photo_sql = "";
+	$cleanName = "";
+
 	if (!empty($_FILES['photo_file']['name'])) {
-		$fileName = $_FILES['photo_file']['name'];
-		// Nettoyage du nom de fichier (enlève espaces et accents)
-		$cleanName = str_replace(' ', '_', $fileName);
-		$targetPath = "upload/" . $cleanName;
-		
-		if (move_uploaded_file($_FILES['photo_file']['tmp_name'], $targetPath)) {
+
+		$uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/odyssee/apps/sliders/upload/';
+
+		// Crée dossier si besoin
+		if (!is_dir($uploadDir)) {
+			mkdir($uploadDir, 0755, true);
+		}
+
+		$file = $_FILES['photo_file'];
+
+		// Vérifications
+		$allowedTypes = ['image/jpeg','image/png','image/webp','image/gif'];
+		$maxSize = 5 * 1024 * 1024; // 5MB
+
+		$tmpName = $file['tmp_name'];
+		$size = $file['size'];
+		$type = mime_content_type($tmpName);
+
+		if (!in_array($type, $allowedTypes)) {
+			die("Format non autorisé");
+		}
+
+		if ($size > $maxSize) {
+			die("Fichier trop volumineux");
+		}
+
+		// Génération nom unique
+		$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+		$cleanName = uniqid('slider_') . '.' . $ext;
+
+		$targetPath = $uploadDir . $cleanName;
+
+		// Upload réel
+		if (move_uploaded_file($tmpName, $targetPath)) {
 			$photo_sql = ", photo = ?";
+		} else {
+			die("Erreur lors de l'upload");
 		}
 	}
 
