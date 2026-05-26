@@ -351,10 +351,10 @@ body {
 	
     <?php if (strpos($slide['photo'], '.mp4') !== false): ?>
         <video autoplay muted loop style="width:100%; height:100%; object-fit: cover;">
-            <source src="../upload/<?php echo $slide['photo']; ?>" type="video/mp4">
+            <source src="../uploads/<?php echo $slide['photo']; ?>" type="video/mp4">
         </video>
     <?php else: ?>
-        <img src="../upload/<?php echo $slide['photo']; ?>" alt="">
+        <img src="../uploads/<?php echo $slide['photo']; ?>" alt="">
     <?php endif; ?>
 
     <div class="slider-content">
